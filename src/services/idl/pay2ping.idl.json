@@ -1,0 +1,264 @@
+{
+  "address": "9tsPJyPArFS3tyNAjtQg8mGSVh7fLa6CSH55cdHcKTvL",
+  "metadata": {
+    "name": "pay2ping",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "create_meeting",
+      "discriminator": [
+        19,
+        143,
+        66,
+        134,
+        88,
+        154,
+        203,
+        122
+      ],
+      "accounts": [
+        {
+          "name": "meeting",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  101,
+                  116,
+                  105,
+                  110,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "host"
+              }
+            ]
+          }
+        },
+        {
+          "name": "host",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "join_window_start",
+          "type": "i64"
+        },
+        {
+          "name": "join_window_end",
+          "type": "i64"
+        },
+        {
+          "name": "stake_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "join_meeting",
+      "discriminator": [
+        190,
+        189,
+        219,
+        19,
+        70,
+        124,
+        104,
+        159
+      ],
+      "accounts": [
+        {
+          "name": "meeting",
+          "writable": true
+        },
+        {
+          "name": "host",
+          "relations": [
+            "meeting"
+          ]
+        },
+        {
+          "name": "participant",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "join_time",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "transfer_tokens",
+      "discriminator": [
+        54,
+        180,
+        238,
+        175,
+        74,
+        85,
+        126,
+        188
+      ],
+      "accounts": [
+        {
+          "name": "from",
+          "writable": true
+        },
+        {
+          "name": "to",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "update_meeting",
+      "discriminator": [
+        106,
+        39,
+        176,
+        102,
+        147,
+        46,
+        204,
+        150
+      ],
+      "accounts": [
+        {
+          "name": "meeting",
+          "writable": true
+        },
+        {
+          "name": "host",
+          "relations": [
+            "meeting"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "join_time",
+          "type": "i64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Meeting",
+      "discriminator": [
+        85,
+        186,
+        152,
+        120,
+        141,
+        133,
+        75,
+        18
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AlreadyJoined",
+      "msg": "Participant has already joined."
+    }
+  ],
+  "types": [
+    {
+      "name": "AttendanceStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "OnTime"
+          },
+          {
+            "name": "Missed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Meeting",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "host",
+            "type": "pubkey"
+          },
+          {
+            "name": "join_window_start",
+            "type": "i64"
+          },
+          {
+            "name": "join_window_end",
+            "type": "i64"
+          },
+          {
+            "name": "stake_amount",
+            "type": "u64"
+          },
+          {
+            "name": "participants",
+            "type": {
+              "vec": "Participant"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Participant",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "status",
+            "type": "AttendanceStatus"
+          }
+        ]
+      }
+    }
+  ]
+}
